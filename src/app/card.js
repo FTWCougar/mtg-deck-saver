@@ -1,65 +1,57 @@
-import React, { useEffect, useState } from "react";
-import "./card.css";
+import React, {useCallback} from 'react';
+import './card.css';
 
-export default function Card({ cards, setCards }) {
-    const [cardCounts, setCardCounts] = useState({});
+export default function Card({cards, setCards}) {
+    const increaseCount = useCallback(
+        (card) => {
+            setCards([...cards, card]);
+        },
+        [cards, setCards]
+    );
 
-    useEffect(() => {
-        const counts = cards.reduce((counts, card) => {
-            const { id } = card;
-            counts[id] = (counts[id] || 0) + 1;
-            return counts;
-        }, {});
+    const decreaseCount = useCallback(
+        (card) => {
+            const localCards = [...cards];
 
-        setCardCounts(counts);
-    }, [cards]);
+            localCards.splice(localCards.lastIndexOf(card), 1);
 
-    const increaseCount = (card) => {
-        fetch(`https://api.magicthegathering.io/v1/cards?name=${card.name}`)
-            .then((res) => res.json())
-            .then((card) => {
-                const newCard = card.cards[0];
-                setCards((prev) => [...prev, newCard]);
-            });
-    };
-    const decreaseCount = (card) => {
-        const index = cards.findIndex((c) => c.id === card.id);
-        if (index > -1) {
-            const array = cards;
-            setCards(array.splice(index, 1));
-            console.log(cards);
-        }
-    };
+            setCards(localCards);
+        },
+        [cards, setCards]
+    );
 
     return (
         <div className="grid-container">
-            {cards &&
-                cards.map((card, index) => {
-                    const count = cardCounts[card.id] || 0;
-
-                    if (index !== cards.findIndex((c) => c.id === card.id)) {
-                        return null;
+            {cards.map((card, index) => {
+                let count = cards.reduce((acc, item) => {
+                    if (item.id === card.id) {
+                        return acc + 1;
                     }
+                }, 0);
 
-                    return (
-                        <div className="grid-item" key={card.id}>
-                            <img
-                                className="card-img"
-                                src={card.imageUrl}
-                                alt={card.name}
-                            />
-                            <div className="count-overlay">
-                                <p>{count}</p>
-                                <button onClick={() => increaseCount(card)}>
-                                    +
-                                </button>
-                                <button onClick={() => decreaseCount(card)}>
-                                    -
-                                </button>
-                            </div>
+                if (index !== cards.findIndex((c) => c.id === card.id)) {
+                    return null;
+                }
+
+                return (
+                    <div className="grid-item" key={card.id}>
+                        <img
+                            className="card-img"
+                            src={card.imageUrl}
+                            alt={card.name}
+                        />
+                        <div className="count-overlay">
+                            <p>{count}</p>
+                            <button onClick={() => increaseCount(card)}>
+                                +
+                            </button>
+                            <button onClick={() => decreaseCount(card)}>
+                                -
+                            </button>
                         </div>
-                    );
-                })}
+                    </div>
+                );
+            })}
         </div>
     );
 }
