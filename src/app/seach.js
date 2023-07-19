@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import "./search.css";
-import CardDisplay from "./cardDisplay";
 
 const filterDuplicates = (card, index, array) => {
     const cardNames = array.map((c) => c.name);

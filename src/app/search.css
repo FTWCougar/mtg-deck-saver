@@ -2,19 +2,22 @@
     display: flex;
     justify-content: center;
 }
+
 .search-input {
     width: 50%;
     font-size: 25px;
     border-radius: 5px;
 
 }
-.search-button{
+
+.search-button {
     margin: 10px;
     padding: 5px;
     border-radius: 5px;
     transition: transform 500ms;
 }
-.search-button:hover{
+
+.search-button:hover {
     background-color: greenyellow;
     transform: scale(1.01);
 }

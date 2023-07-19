@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import "./cardDisplay.css";
 import Card from "./card";
 
 export default function CardDisplay({ cards, setCards }) {
