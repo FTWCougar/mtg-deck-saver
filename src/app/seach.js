@@ -1,46 +1,62 @@
-import { useEffect, useState } from "react";
-import Card from "./card";
-import "./search.css";
+import {useEffect, useState} from 'react';
+import Card from './card';
+import './search.css';
+
+const filterDuplicates = (card, index, array) => {
+    const cardNames = array.map((c) => c.name);
+
+    return cardNames.indexOf(card.name) === index;
+};
+
+const fetchCardData = async (input) => {
+    try {
+        const response = await fetch(
+            `https://api.magicthegathering.io/v1/cards?name=${input}`
+        );
+
+        const searchRes = await response.json();
+
+        const filteredCards = searchRes.cards.filter(filterDuplicates);
+
+        return [filteredCards, searchRes.cards];
+    } catch (error) {
+        console.error('Error fetching card data:', error);
+    }
+};
 
 export default function AddCard() {
-    const [input, setInput] = useState("");
+    const [input, setInput] = useState('');
     const [results, setResults] = useState([]);
-    const [filteredResults, setFilteredResults] = useState([]);
     const [cards, setCards] = useState([]);
+    const [searchResultsLength, setSearchResultsLength] = useState(-1);
 
     useEffect(() => {
-        const fetchCardData = async () => {
-            try {
-                const response = await fetch(
-                    `https://api.magicthegathering.io/v1/cards?name=${input}`
-                );
-                const searchRes = await response.json();
-                setResults(searchRes.cards);
-            } catch (error) {
-                console.error("Error fetching card data:", error);
-            }
-        };
-
-        if (input.length >= 3) {
-            fetchCardData();
+        if (input.length < 3) {
+            setSearchResultsLength(-1);
+            setResults([]);
         }
-    }, [input]);
 
-    useEffect(() => {
-        const filteredOptions = results.filter((card, index) => {
-            return index === 0 || card.name !== results[index - 1].name;
-        });
-        setFilteredResults(filteredOptions);
-    }, [results]);
+        if (
+            input.length >= 3 &&
+            (searchResultsLength === -1 || searchResultsLength === 100)
+        ) {
+            fetchCardData(input).then((res) => {
+                const [filteredResults, rawResults] = res;
+                setResults(filteredResults);
+                setSearchResultsLength(rawResults.length);
+            });
+        }
+    }, [input, setResults]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch(`https://api.magicthegathering.io/v1/cards?name=${input}`)
-            .then((res) => res.json())
-            .then((card) => {
-                const newCard = card.cards[0];
-                setCards((prev) => [...prev, newCard]);
-            });
+
+        setCards([
+            ...cards,
+            results.find(
+                (card) => card.name.toLowerCase() === input.toLowerCase()
+            ),
+        ]);
     };
 
     return (
@@ -53,7 +69,7 @@ export default function AddCard() {
                     list="cards"
                 />
                 <datalist id="cards">
-                    {filteredResults.map((card) => {
+                    {results.map((card) => {
                         return <option key={card.id}>{card.name}</option>;
                     })}
                 </datalist>
