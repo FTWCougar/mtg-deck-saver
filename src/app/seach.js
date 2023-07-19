@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
-import Card from './card';
-import './search.css';
+import { useEffect, useState } from "react";
+import "./search.css";
+import CardDisplay from "./cardDisplay";
 
 const filterDuplicates = (card, index, array) => {
     const cardNames = array.map((c) => c.name);
@@ -20,14 +20,13 @@ const fetchCardData = async (input) => {
 
         return [filteredCards, searchRes.cards];
     } catch (error) {
-        console.error('Error fetching card data:', error);
+        console.error("Error fetching card data:", error);
     }
 };
 
-export default function AddCard() {
-    const [input, setInput] = useState('');
+export default function AddCard({ cards, setCards }) {
+    const [input, setInput] = useState("");
     const [results, setResults] = useState([]);
-    const [cards, setCards] = useState([]);
     const [searchResultsLength, setSearchResultsLength] = useState(-1);
 
     useEffect(() => {
@@ -46,7 +45,7 @@ export default function AddCard() {
                 setSearchResultsLength(rawResults.length);
             });
         }
-    }, [input, setResults]);
+    }, [input, setResults, searchResultsLength]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -75,7 +74,6 @@ export default function AddCard() {
                 </datalist>
                 <button className="search-button">Add Card</button>
             </form>
-            <Card cards={cards} setCards={setCards} />
         </div>
     );
 }

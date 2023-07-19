@@ -1,14 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import CardDisplay from "./cardDisplay.js";
 import Search from "./seach.js";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
+    const [cards, setCards] = useState([]);
     return (
         <main>
-            <ToastContainer />
-            <Search />
+            <Search cards={cards} setCards={setCards} />
+            <CardDisplay cards={cards} setCards={setCards} />
         </main>
     );
 }
