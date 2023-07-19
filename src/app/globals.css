@@ -1,3 +1,7 @@
 @import "card.css";
 @import "cardDisplay.css";
 @import "search.css";
+
+html {
+    background-color: rgb(233, 230, 230);
+}
