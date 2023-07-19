@@ -1,0 +1,31 @@
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.grid-item {
+    align-items: center;
+    justify-content: center;
+    height: 310px;
+    width: 223px;
+    display: flex;
+    position: relative;
+}
+
+.card-img {
+    height: 95%;
+    width: 95%;
+}
+.card-img:hover {
+    height: 100%;
+    width: 100%;
+}
+.count-overlay {
+    position: absolute;
+    bottom: 5px;
+    width: 90%;
+    height: 15%;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+  }
